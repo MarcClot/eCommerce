@@ -23,48 +23,49 @@ try {
     // Calculate price with IVA (21%)
     $priceWithIVA = $priceWithoutIVA * 1.21;
     
-    // Connect to SQLite database
-    $dbPath = '/var/www/html/eCommerce/onlineOrders/onlineOrders.db';
-    $db = new PDO("sqlite:$dbPath");
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Get current timestamp
+    $createdAt = date('Y-m-d H:i:s');
     
-    // Create table if it doesn't exist
-    $db->exec("CREATE TABLE IF NOT EXISTS orders (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        commandID TEXT NOT NULL,
-        name TEXT NOT NULL,
-        lastName TEXT NOT NULL,
-        secondLastName TEXT,
-        email TEXT NOT NULL,
-        phone TEXT NOT NULL,
-        address TEXT NOT NULL,
-        products TEXT NOT NULL,
-        priceWithoutIVA REAL NOT NULL,
-        priceWithIVA REAL NOT NULL,
-        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )");
+    // Build order array
+    $order = [
+        'commandID' => $commandID,
+        'name' => $name,
+        'lastName' => $lastName,
+        'secondLastName' => $secondLastName,
+        'email' => $email,
+        'phone' => $phone,
+        'address' => $address,
+        'products' => $products,
+        'priceWithoutIVA' => $priceWithoutIVA,
+        'priceWithIVA' => $priceWithIVA,
+        'createdAt' => $createdAt
+    ];
     
-    // Full name in one variable
-    $fullName = trim($name . ' ' . $lastName . ' ' . $secondLastName);
+    // Path to binary file
+    $filePath = '/var/www/html/eCommerce/onlineOrders/onlineOrders.db';
     
-    // Insert order into database
-    $stmt = $db->prepare("INSERT INTO orders 
-        (commandID, name, lastName, secondLastName, email, phone, address, products, priceWithoutIVA, priceWithIVA) 
-        VALUES 
-        (:commandID, :name, :lastName, :secondLastName, :email, :phone, :address, :products, :priceWithoutIVA, :priceWithIVA)");
+    // Read existing orders from binary file
+    $orders = [];
+    if (file_exists($filePath)) {
+        $binaryData = file_get_contents($filePath);
+        if ($binaryData !== false && strlen($binaryData) > 0) {
+            $orders = unserialize($binaryData);
+            if (!is_array($orders)) {
+                $orders = [];
+            }
+        }
+    }
     
-    $stmt->execute([
-        ':commandID' => $commandID,
-        ':name' => $name,
-        ':lastName' => $lastName,
-        ':secondLastName' => $secondLastName,
-        ':email' => $email,
-        ':phone' => $phone,
-        ':address' => $address,
-        ':products' => json_encode($products),
-        ':priceWithoutIVA' => $priceWithoutIVA,
-        ':priceWithIVA' => $priceWithIVA
-    ]);
+    // Add new order to array
+    $orders[] = $order;
+    
+    // Serialize and save to binary file
+    $binaryData = serialize($orders);
+    $result = file_put_contents($filePath, $binaryData);
+    
+    if ($result === false) {
+        throw new Exception("Failed to write to file");
+    }
     
     // Return only the price with IVA
     echo json_encode([
