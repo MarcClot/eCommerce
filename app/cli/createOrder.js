@@ -1,11 +1,11 @@
 function toggleQuantity() {
-    //1st product
+    // 1st product
     if (firstCheckboxStretched.checked) {
         quantityFirstProduct.disabled = false;
     } else {
         quantityFirstProduct.disabled = true;
     }
-    //2nd product
+    // 2nd product
     if (secondCheckboxStretched.checked) {
         quantitySecondProduct.disabled = false;
     } else {
@@ -25,7 +25,7 @@ function toggleQuantity() {
     }
 }
 
-function sendInfo(){
+function sendInfo() {
     const result = document.getElementById("result");
     
     // Collect all form data
@@ -39,7 +39,6 @@ function sendInfo(){
     
     // Prepare product data
     const products = [];
-    
     if (document.getElementById('firstCheckboxStretched').checked) {
         products.push({
             name: 'Bicycle carrier',
@@ -47,7 +46,6 @@ function sendInfo(){
             quantity: parseInt(document.getElementById('quantityFirstProduct').value)
         });
     }
-    
     if (document.getElementById('secondCheckboxStretched').checked) {
         products.push({
             name: 'Snow chains',
@@ -55,7 +53,6 @@ function sendInfo(){
             quantity: parseInt(document.getElementById('quantitySecondProduct').value)
         });
     }
-    
     if (document.getElementById('thirdCheckboxStretched').checked) {
         products.push({
             name: 'GPS',
@@ -63,7 +60,6 @@ function sendInfo(){
             quantity: parseInt(document.getElementById('quantityThirdProduct').value)
         });
     }
-    
     if (document.getElementById('fourthCheckboxStretched').checked) {
         products.push({
             name: 'Spare tire',
@@ -83,11 +79,8 @@ function sendInfo(){
     formData.append('address', address);
     formData.append('products', JSON.stringify(products));
     
-    // Build the request
-    const ip = "192.168.1.86";
-    const folder = "eCommerce/app/srv";
-    const phpFile = "createOrder.php";
-    const request = "http://" + ip + "/" + folder + "/" + phpFile;
+    // Using buildRequest() from reusable.js
+    const request = buildRequest("createOrder.php");
     
     // Send the request
     fetch(request, {
@@ -97,7 +90,8 @@ function sendInfo(){
     .then(response => response.json())
     .then(result => {
         if (result.success) {
-            document.getElementById("result").textContent = "Order created successfully. Total price with IVA (21%): " + result.priceWithIVA.toFixed(2) + "€";
+            // Using formatPrice() from reusable.js
+            document.getElementById("result").textContent = "Order created successfully. Total price with IVA (21%): " + formatPrice(result.priceWithIVA);
         } else {
             document.getElementById("result").textContent = "Error: " + result.error;
         }

@@ -21,12 +21,82 @@
 
         <dl class="row">
             <dt class="col-sm-3">About this aplication</dt>
-            <dd class="col-sm-9">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</dd>
+            <dd class="col-sm-9">Welcome to the eCommerce Order Management System – a comprehensive web application
+                designed to streamline the process of creating, viewing, and managing online orders. This application
+                provides an intuitive interface for handling customer orders, tracking inventory, and managing product
+                sales with automatic IVA (VAT) calculations.
+                Built with modern web technologies, this system combines a user-friendly client-side interface (HTML,
+                CSS, and JavaScript) with a robust server-side backend (PHP) to ensure reliable data storage and
+                retrieval. All order information is securely stored in a binary database file, ensuring data persistence
+                and quick access to order history.
+                Key Features:
+
+                Create Orders: Add new customer orders with multiple products and automatic price calculations
+                View All Orders: Browse complete order history with detailed statistics and revenue tracking
+                Search Orders: Quickly find specific orders by their unique ID
+                IVA Calculation: Automatic 21% VAT calculation on all orders
+                Real-time Updates: Instant feedback on order creation and search operations</dd>
 
             <dt class="col-sm-3">How to use the operation menu</dt>
             <dd class="col-sm-9">
-                <p>Definition for the term.</p>
-                <p>And some more placeholder definition text.</p>
+                <p>When you access the application, you'll be presented with three main operations. Here's how to use
+                    each one: <br>
+                    1. Create Order
+                    Use this option to register a new customer order in the system.
+                    Steps:
+
+                    Select the "Create order" radio button
+                    Click "Select" to proceed
+                    Fill in all customer information:
+
+                    Command ID (unique order identifier)
+                    Customer name, last names
+                    Email address and phone number
+                    Delivery address
+
+
+                    Select products from the list by checking the boxes
+                    Adjust quantities for each selected product (minimum 1)
+                    Click "Send" to process the order
+                    The system will display the total price with IVA (21%)
+
+                    Available Products:
+
+                    Bicycle carrier: 80€
+                    Snow chains: 60€
+                    GPS: 120€
+                    Spare tire: 130€ <br>
+
+                    2. View All Orders
+                    Access a complete overview of all orders stored in the system.
+                    What you'll see:
+
+                    Statistics Dashboard: Total orders, revenue, IVA collected, and average order value
+                    Detailed Table: All orders with customer information, products, prices, and dates
+                    Orders are sorted by date (newest first)
+                    Each row displays: Order ID, customer details, products purchased, quantities, pricing breakdown,
+                    and creation date <br>
+
+                    3. Search Order by ID
+                    Quickly locate and view details of a specific order. <br>
+                    Steps: <br>
+
+                    Select the "Search order by ID" radio button
+                    Click "Select" to proceed
+                    Enter the Command ID in the search field
+                    Click "Search Order"
+                    View complete order details including:
+
+                    Customer information
+                    Order date and time
+                    Complete product list with quantities
+                    Price breakdown (without IVA, IVA amount, total with IVA)
+
+
+                    Navigation
+
+                    Back to Menu: Returns you to the operation selection menu
+                    Back to Home: Takes you to the application's main homepage</p>
             </dd>
 
         </dl>
@@ -34,7 +104,8 @@
         </dl>
 
         <button type="button" onclick="window.location = 'index.html';" class="btn btn-dark">Back to home</button>
-        <button type="button" onclick="window.location = 'operation.html';" class="btn btn-dark">Operation selection menu</button><br>
+        <button type="button" onclick="window.location = 'operation.html';" class="btn btn-dark">Operation selection
+            menu</button><br>
 
     </div>
 
