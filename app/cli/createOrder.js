@@ -1,26 +1,22 @@
 function toggleQuantity() {
-
-    //1s product 
+    //1st product
     if (firstCheckboxStretched.checked) {
         quantityFirstProduct.disabled = false;
     } else {
         quantityFirstProduct.disabled = true;
     }
-
     //2nd product
     if (secondCheckboxStretched.checked) {
         quantitySecondProduct.disabled = false;
     } else {
         quantitySecondProduct.disabled = true;
     }
-
     // 3rd product
     if (thirdCheckboxStretched.checked) {
         quantityThirdProduct.disabled = false;
     } else {
         quantityThirdProduct.disabled = true;
     }
-
     // 4th product
     if (fourthCheckboxStretched.checked) {
         quantityFourthProduct.disabled = false;
@@ -29,53 +25,85 @@ function toggleQuantity() {
     }
 }
 
-function sendInfo() {
-    const values = new FormData(document.getElementById("FormCreateOrder"));
+function sendInfo(){
     const result = document.getElementById("result");
-
-    comandID = values.get("inputCommandID");
-    username = values.get("Name");
-    userLastName = values.get("LastName");
-    user2nLastName = values.get("SecondLastName");
-    email = values.get("inputEmail");
-    phone = values.get("inputPhone");
-    address = values.get("inputAddress");
-    priceFirstProduct = values.get("priceFirstProduct");
-    priceSecondProduct = values.get("priceSecondProduct");
-    priceThirdProduct = values.get("priceThirdProduct");
-    priceFourthProduct = values.get("priceFourthProduct");
-
-    const ip = "localhost"; //for the moment we're going to leave it in localhost
-    const folder = "../srv"; 
-    const PHPfile = "createOrder.php"; 
-    const request = "http://" + ip + "/" + folder + "/" + PHPfile + 
-                   "?inputCommandID=" + encodeURIComponent(comandID) + 
-                   "&Name=" + encodeURIComponent(username) + 
-                   "&LastName=" + encodeURIComponent(userLastName) + 
-                   "&SecondLastName=" + encodeURIComponent(user2nLastName) + 
-                   "&inputEmail=" + encodeURIComponent(email) + 
-                   "&inputPhone=" + encodeURIComponent(phone) + 
-                   "&inputAddress=" + encodeURIComponent(address) + 
-                   "&priceFirstProduct=" + encodeURIComponent(priceFirstProduct) + 
-                   "&priceSecondProduct=" + encodeURIComponent(priceSecondProduct) + 
-                   "&priceThirdProduct=" + encodeURIComponent(priceThirdProduct) + 
-                   "&priceFourthProduct=" + encodeURIComponent(priceFourthProduct);
-
-     fetch(request, {
-        method: 'GET'
-    })
-        .then(reply => reply.json()) // JSON
-        .then(outcome => {
-        if (outcome.totalPriceWithIVA) {
-            //If server has given the price with IVA. we show the result 
-            result.textContent = `Order submitted successfully! The total price with IVA is: €${outcome.totalPriceWithIVA.toFixed(2)}`;
-        } else {
-            result.textContent = "Error: No price with IVA returned from server.";
-        }
-    }) 
-        .catch(errors => { 						
-            result.textContent = "Error sending data to server";
+    
+    // Collect all form data
+    const commandID = document.getElementById("inputCommandID").value;
+    const name = document.getElementById("Name").value;
+    const lastName = document.getElementById("LastName").value;
+    const secondLastName = document.getElementById("SecondLastName").value;
+    const email = document.getElementById("inputEmail").value;
+    const phone = document.getElementById("inputPhone").value;
+    const address = document.getElementById("inputAddress").value;
+    
+    // Prepare product data
+    const products = [];
+    
+    if (document.getElementById('firstCheckboxStretched').checked) {
+        products.push({
+            name: 'Bicycle carrier',
+            price: 80,
+            quantity: parseInt(document.getElementById('quantityFirstProduct').value)
         });
+    }
+    
+    if (document.getElementById('secondCheckboxStretched').checked) {
+        products.push({
+            name: 'Snow chains',
+            price: 60,
+            quantity: parseInt(document.getElementById('quantitySecondProduct').value)
+        });
+    }
+    
+    if (document.getElementById('thirdCheckboxStretched').checked) {
+        products.push({
+            name: 'GPS',
+            price: 120,
+            quantity: parseInt(document.getElementById('quantityThirdProduct').value)
+        });
+    }
+    
+    if (document.getElementById('fourthCheckboxStretched').checked) {
+        products.push({
+            name: 'Spare tire',
+            price: 130,
+            quantity: parseInt(document.getElementById('quantityFourthProduct').value)
+        });
+    }
+    
+    // Create FormData with all data
+    const formData = new FormData();
+    formData.append('commandID', commandID);
+    formData.append('name', name);
+    formData.append('lastName', lastName);
+    formData.append('secondLastName', secondLastName);
+    formData.append('email', email);
+    formData.append('phone', phone);
+    formData.append('address', address);
+    formData.append('products', JSON.stringify(products));
+    
+    // Build the request
+    const ip = "192.168.1.86";
+    const folder = "eCommerce/app/srv";
+    const phpFile = "createOrder.php";
+    const request = "http://" + ip + "/" + folder + "/" + phpFile;
+    
+    // Send the request
+    fetch(request, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            document.getElementById("result").textContent = "Order created successfully. Total price with IVA (21%): " + result.priceWithIVA.toFixed(2) + "€";
+        } else {
+            document.getElementById("result").textContent = "Error: " + result.error;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById("result").textContent = "Error processing the order";
+    });
 }
-
-
